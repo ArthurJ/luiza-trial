@@ -1,3 +1,36 @@
+# Quake Log Parser & API
+
+O código precisa ser executado em Python 3.7+
+
+### Instalando pacotes necessários
+`$ pip install -r requirements.txt`
+
+Pacotes usados:
+- Flask
+- Markdown
+
+### Executando servidor
+Para executar em modo teste:
+`$ python app.py`
+
+No o servidor estará disponível no endereço http://127.0.0.1:5000/ 
+
+`/api` lista todos os jogos parseados
+`/api/download` transfere o json com o conteúdo anterior
+`/api/game/1` mostra o jogo game_1
+`/api/game/1/download` transfere o json com o conteúdo anterior
+
+### Executando Parser
+
+Para executar apenas o parser:
+`$ python parser.py`
+
+O parser espera pelo arquivo `game.log` no mesmo diretório.
+Os testes de unidade foram escritos como doctest, na definição das funções responsáveis pelo parsing.
+
+Cada palavra chave no log é mapeada para uma função responsável pelo comportamento a ser executado.
+
+----------------------------------------------------------------
 # Quake log parser
 
 ## Task 1 - Construa um parser para o arquivo de log games.log.
