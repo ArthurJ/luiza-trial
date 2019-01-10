@@ -89,7 +89,7 @@ def client_change(details, kills, game, games, players_dict):
     return kills, game, players_dict
 
 
-def process(commands):
+def process(commands, f_input):
     games = []
     players_dict, kills, game = {}, {}, {}
 
@@ -107,19 +107,17 @@ def process(commands):
     return games_dict
 
 
+commands = {'Kill:':kill,
+                'ShutdownGame:':end_game,
+                'InitGame:': end_game, # As vezes não há marcador de fim de jogo
+                'ClientConnect:':client_connect,
+                'ClientUserinfoChanged:': client_change}
+
 if __name__ ==  '__main__':
 
     # Executa os doctests
     import doctest
     doctest.testmod()
     
-    f_input = open('games.log', 'r')
-
-    commands = {'Kill:':kill,
-                'ShutdownGame:':end_game,
-                'InitGame:': end_game, # As vezes não há marcador de fim de jogo
-                'ClientConnect:':client_connect,
-                'ClientUserinfoChanged:': client_change}
-    
-    games = process(commands)
+    games = process(commands, open('games.log', 'r'))
     [print(g, games[g]) for g in games]
