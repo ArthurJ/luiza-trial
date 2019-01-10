@@ -33,6 +33,28 @@ def kill(details, kills, game, games, players_dict):
     return kills, game, players_dict
 
 def end_game(details, kills, game, games, players_dict):
+    '''
+        # Fim de jogo deve retornar um novo estado vazio
+        >>> kills = {'4': 12, '6': 19, '7': 6, '2': 17, '5': 16, '3': 21}
+        >>> game = {'total_kills': 131, 'kills': {'4': 12, '6': 19, '7': 6}}
+        >>> games = [{'kills': {}}, {'total_kills': 15, 'kills': {'2': -8, '3': 1, '4': -2}}]
+        >>> end_game([], kills, game, games, {})
+        ({}, {}, {})
+
+        # game deve conter kills, e deve ser colocado na lista `games`
+        >>> kills = {'4': 12, '6': 19, '7': 6, '2': 17, '5': 16, '3': 21}
+        >>> game = {'total_kills': 131, 'kills': {'4': 12, '6': 19, '7': 6}}
+        >>> games = [{'kills': {}}, {'total_kills': 15, 'kills': {'2': -8, '3': 1, '4': -2}}]
+        >>> end_game([], kills, game, games, {})
+        ({}, {}, {})
+        >>> game['kills'] == kills
+        True
+        >>> games[-1] == game
+        True
+    '''
+    game['kills'] = kills
+    games.append(game)
+    # print(details, kills, game, games, players_dict, end='\n')
     return {}, {}, {}
 
 if __name__ ==  '__main__':
@@ -41,14 +63,15 @@ if __name__ ==  '__main__':
     
     f_input = open('games.log', 'r')
 
-    commands = {'Kill:':kill}
+    commands = {'Kill:':kill,
+                'ShutdownGame:':end_game,}
     games = []
     game = {}
     kills = {}
     players_dict = {}
 
     for line in f_input:
-        print(game, kills)
+        # print(game, kills)
         minute, action, details = break_line(line)
         kills, game, players_dict = commands.get(action, ignore)\
                                         (details, kills, game, games, players_dict)
