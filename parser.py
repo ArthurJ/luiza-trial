@@ -54,8 +54,33 @@ def end_game(details, kills, game, games, players_dict):
     '''
     game['kills'] = kills
     games.append(game)
-    # print(details, kills, game, games, players_dict, end='\n')
     return {}, {}, {}
+
+def client_connect(details, kills, game, games, players_dict):
+    '''
+        # novo jogador deve ser acrescentado na lista de jogadores
+        >>> client_connect(['7'], {}, {}, [], {})
+        ({}, {'players': {'7'}}, {})
+    '''
+    players = game.get('players', set())
+    players.add(details[0])
+    game['players'] = players
+    return kills, game, players_dict
+
+def client_change(details, kills, game, games, players_dict):
+    '''
+        # Atualizações de nome devem ser registradas
+        >>> client_change(['7', r'n\\Mal\\t\\0...'],{},{}, [], {})
+        ({}, {}, {'7': 'Mal'})
+        >>> client_change(['7', r'n\\Bem\\t\\0...'],{},{}, [], {'7': 'Mal'})
+        ({}, {}, {'7': 'Bem'})
+    '''
+    # print(details, kills, game, games, players_dict, end='\n\n')
+    player, *player_name = details
+    player_name = player_name[0].split('\\t')[0][2:]
+    players_dict[player] = player_name
+    # print(players_dict)
+    return kills, game, players_dict
 
 if __name__ ==  '__main__':
     import doctest
@@ -64,7 +89,9 @@ if __name__ ==  '__main__':
     f_input = open('games.log', 'r')
 
     commands = {'Kill:':kill,
-                'ShutdownGame:':end_game,}
+                'ShutdownGame:':end_game,
+                'ClientConnect:':client_connect,
+                'ClientUserinfoChanged:': client_change}
     games = []
     game = {}
     kills = {}
