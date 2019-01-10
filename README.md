@@ -15,10 +15,10 @@ Para executar em modo teste:
 
 No o servidor estará disponível no endereço http://127.0.0.1:5000/ 
 
-`/api` lista todos os jogos parseados
-`/api/download` transfere o json com o conteúdo anterior
-`/api/game/1` mostra o jogo game_1
-`/api/game/1/download` transfere o json com o conteúdo anterior
+- `/api` lista todos os jogos parseados.
+- `/api/download` transfere o json com o conteúdo anterior.
+- `/api/game/1` mostra o jogo game_1.
+- `/api/game/1/download` transfere o json com o conteúdo anterior.
 
 ### Executando Parser
 
