@@ -53,7 +53,8 @@ def end_game(details, kills, game, games, players_dict):
         True
     '''
     if len(players_dict) == 0:
-        # Caso um jogo tenha terminado com registro, o init não reexecutará essa função
+        # Caso um jogo tenha terminado com registro, 
+        # o init não reexecutará essa função
         return kills, game, players_dict
     named_kills = dict((players_dict[k], kills[k]) for k in kills)
     game['kills'] = named_kills
@@ -87,7 +88,28 @@ def client_change(details, kills, game, games, players_dict):
     # print(players_dict)
     return kills, game, players_dict
 
+
+def process(commands):
+    games = []
+    players_dict, kills, game = {}, {}, {}
+
+    for line in f_input:
+        # print(game, kills)
+        minute, action, details = break_line(line)
+        kills, game, players_dict = commands.get(action, ignore) \
+                                                (details, kills, game, 
+                                                games, players_dict)
+        
+    games_dict = dict()
+    for i in range(len(games)):
+        games_dict[f'game_{i}'] = games[i]
+    
+    return games_dict
+
+
 if __name__ ==  '__main__':
+
+    # Executa os doctests
     import doctest
     doctest.testmod()
     
@@ -98,19 +120,6 @@ if __name__ ==  '__main__':
                 'InitGame:': end_game, # As vezes não há marcador de fim de jogo
                 'ClientConnect:':client_connect,
                 'ClientUserinfoChanged:': client_change}
-    games = []
-    game = {}
-    kills = {}
-    players_dict = {}
-
-    for line in f_input:
-        # print(game, kills)
-        minute, action, details = break_line(line)
-        kills, game, players_dict = commands.get(action, ignore)\
-                                        (details, kills, game, games, players_dict)
-        
-    games_dict = dict()
-    for i in range(len(games)):
-        games_dict[f'game_{i}'] = games[i]
     
-    [print(g, games_dict[g]) for g in games_dict]
+    games = process(commands)
+    [print(g, games[g]) for g in games]
