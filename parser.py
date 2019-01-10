@@ -36,23 +36,28 @@ def end_game(details, kills, game, games, players_dict):
     '''
         # Fim de jogo deve retornar um novo estado vazio
         >>> kills = {'4': 12, '6': 19, '7': 6, '2': 17, '5': 16, '3': 21}
-        >>> game = {'total_kills': 131, 'kills': {'4': 12, '6': 19, '7': 6}}
+        >>> game = {'total_kills': 131, 'kills': {'4': 12, '6': 19, '7': 6}, 'players':{'4','6','7','2','5','3'}}
         >>> games = [{'kills': {}}, {'total_kills': 15, 'kills': {'2': -8, '3': 1, '4': -2}}]
-        >>> end_game([], kills, game, games, {})
+        >>> end_game([], kills, game, games, {'4':'4','6':'6','7':'7','2':'2','5':'5','3':'3'})
         ({}, {}, {})
 
         # game deve conter kills, e deve ser colocado na lista `games`
         >>> kills = {'4': 12, '6': 19, '7': 6, '2': 17, '5': 16, '3': 21}
-        >>> game = {'total_kills': 131, 'kills': {'4': 12, '6': 19, '7': 6}}
+        >>> game = {'total_kills': 131, 'kills': {'4': 12, '6': 19, '7': 6}, 'players':{'4','6','7','2','5','3'}}
         >>> games = [{'kills': {}}, {'total_kills': 15, 'kills': {'2': -8, '3': 1, '4': -2}}]
-        >>> end_game([], kills, game, games, {})
+        >>> end_game([], kills, game, games, {'4':'4','6':'6','7':'7','2':'2','5':'5','3':'3'})
         ({}, {}, {})
         >>> game['kills'] == kills
         True
         >>> games[-1] == game
         True
     '''
-    game['kills'] = kills
+    if len(players_dict) == 0:
+        # Caso um jogo tenha terminado com registro, o init não reexecutará essa função
+        return kills, game, players_dict
+    named_kills = dict((players_dict[k], kills[k]) for k in kills)
+    game['kills'] = named_kills
+    game['players'] = [players_dict[p] for p in game['players']]
     games.append(game)
     return {}, {}, {}
 
@@ -90,6 +95,7 @@ if __name__ ==  '__main__':
 
     commands = {'Kill:':kill,
                 'ShutdownGame:':end_game,
+                'InitGame:': end_game, # As vezes não há marcador de fim de jogo
                 'ClientConnect:':client_connect,
                 'ClientUserinfoChanged:': client_change}
     games = []
@@ -102,4 +108,9 @@ if __name__ ==  '__main__':
         minute, action, details = break_line(line)
         kills, game, players_dict = commands.get(action, ignore)\
                                         (details, kills, game, games, players_dict)
+        
+    games_dict = dict()
+    for i in range(len(games)):
+        games_dict[f'game_{i}'] = games[i]
     
+    [print(g, games_dict[g]) for g in games_dict]
