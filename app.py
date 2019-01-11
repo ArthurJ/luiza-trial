@@ -1,7 +1,7 @@
 import json
 from tempfile import NamedTemporaryFile
 from markdown import markdown
-from parser import process, commands
+from quake_parser import process, commands
 from flask import Flask, jsonify, render_template, Markup, send_file
 
 app = Flask(__name__)
